@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bilingual Form (English/Arabic)</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f9f9f9;
+      direction: ltr;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    .language-switch {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 20px;
+    }
+    .rtl {
+      direction: rtl;
+    }
+  </style>
+</head>
+<body>
+  <div class="language-switch">
+    <button onclick="switchLanguage('en')">English</button>
+    <button onclick="switchLanguage('ar')">العربية</button>
+  </div>
+  <div class="form-container">
+    <h2 id="form-title">Dynamic Questions Form</h2>
+    <form id="dynamicForm">
+      <div class="question">
+        <label for="name" id="label-name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+      </div>
+      <div class="question">
+        <label for="email" id="label-email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email">
+      </div>
+      <div class="question">
+        <label for="message" id="label-message">Message:</label>
+        <textarea id="message" name="message" placeholder="Enter your message"></textarea>
+      </div>
+      <button type="button" onclick="handleSubmit()">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    // Localization Object
+    const translations = {
+      en: {
+        formTitle: "Dynamic Questions Form",
+        name: "Name:",
+        namePlaceholder: "Enter your name",
+        email: "Email:",
+        emailPlaceholder: "Enter your email",
+        message: "Message:",
+        messagePlaceholder: "Enter your message",
+        submit: "Submit"
+      },
+      ar: {
+        formTitle: "نموذج الأسئلة الديناميكي",
+        name: "الاسم:",
+        namePlaceholder: "أدخل اسمك",
+        email: "البريد الإلكتروني:",
+        emailPlaceholder: "أدخل بريدك الإلكتروني",
+        message: "رسالة:",
+        messagePlaceholder: "أدخل رسالتك",
+        submit: "إرسال"
+      }
+    };
+
+    let currentLanguage = "en";
+
+    // Function to switch language
+    function switchLanguage(lang) {
+      currentLanguage = lang;
+      const formContainer = document.querySelector(".form-container");
+      document.body.className = lang === "ar" ? "rtl" : "";
+      
+      document.getElementById("form-title").textContent = translations[lang].formTitle;
+      document.getElementById("label-name").textContent = translations[lang].name;
+      document.getElementById("name").placeholder = translations[lang].namePlaceholder;
+      document.getElementById("label-email").textContent = translations[lang].email;
+      document.getElementById("email").placeholder = translations[lang].emailPlaceholder;
+      document.getElementById("label-message").textContent = translations[lang].message;
+      document.getElementById("message").placeholder = translations[lang].messagePlaceholder;
+      document.querySelector("button").textContent = translations[lang].submit;
+    }
+
+    // Function to handle form submission
+    function handleSubmit() {
+      const form = document.getElementById("dynamicForm");
+      const formData = new FormData(form);
+
+      const entries = Object.fromEntries(formData.entries());
+      console.log("Form Data:", entries);
+
+      // Send email using EmailJS
+      emailjs.init("service_9f2w62n"); // Replace with your EmailJS user ID
+      emailjs.send("service_9f2w62n", "template_ysi65ky", entries)
+        .then(() => {
+          alert("Form submitted successfully!");
+        })
+        .catch(err => {
+          alert("Error submitting form. Please try again.");
+          console.error(err);
+        });
+    }
+  </script>
+  <!-- EmailJS CDN -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+</body>
+</html>
